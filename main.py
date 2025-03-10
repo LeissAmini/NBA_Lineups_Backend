@@ -73,6 +73,4 @@ def get_today_games():
             }
         })
 
-    # Print response for debugging
-
     return JSONResponse(content={"games": formatted_games})
