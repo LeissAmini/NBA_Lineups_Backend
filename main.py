@@ -28,8 +28,6 @@ def get_today_games():
         home_team = game["homeTeam"]
         away_team = game["awayTeam"]
 
-        # Fetch boxscore
-        time.sleep(2)  # Avoid rate limiting
         try:
             boxscore_data = boxscore.BoxScore(game_id).get_dict().get("game", {})
 
