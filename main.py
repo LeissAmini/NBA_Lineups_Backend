@@ -1,11 +1,9 @@
 from fastapi.responses import JSONResponse
 from fastapi import FastAPI
 from nba_api.live.nba.endpoints import scoreboard, boxscore
-from datetime import datetime
-import time
+from dateutil import parser
 
 app = FastAPI()
-
 
 @app.get("/")
 def get_today_games():
@@ -22,8 +20,14 @@ def get_today_games():
         if not tipoff_time_utc:
             continue
 
-        tipoff_time = datetime.strptime(tipoff_time_utc, "%Y-%m-%dT%H:%M:%SZ").strftime("%I:%M %p")
-        game_date = datetime.strptime(tipoff_time_utc, "%Y-%m-%dT%H:%M:%SZ").strftime("%B %d, %Y")
+        try:
+            parsed_time = parser.parse(tipoff_time_utc)  # Automatically handles timezones
+            tipoff_time = parsed_time.strftime("%I:%M %p")  # Convert to readable format
+            game_date = parsed_time.strftime("%B %d, %Y")  # Format date
+        except Exception as e:
+            print(f"Error parsing tip-off time: {e}")
+            tipoff_time = "Unknown"
+            game_date = "Unknown"
 
         home_team = game["homeTeam"]
         away_team = game["awayTeam"]
