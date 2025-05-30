@@ -8,8 +8,13 @@ app = FastAPI()
 @app.get("/")
 def get_today_games():
     # Fetch live scoreboard data
-    scoreboard_data = scoreboard.ScoreBoard()
-    games_data = scoreboard_data.get_dict().get("scoreboard", {}).get("games", [])
+    try:
+        
+        scoreboard_data = scoreboard.ScoreBoard()
+        games_data = scoreboard_data.get_dict().get("scoreboard", {}).get("games", [])
+    except Exception as e:
+        print(f"Error fetching scoreboard data: {e}")
+        return JSONResponse(status_code=503, content={"error": "Could not fetch NBA scoreboard data"})
 
     formatted_games = []
     for game in games_data:
